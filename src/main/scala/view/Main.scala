@@ -16,18 +16,17 @@ import scalafx.scene.paint.Color
   */
 object Main extends JFXApp {
 
-
   val lb = DenseVector[Double](-100, -100)
   val ub = DenseVector[Double](100, 100)
 
   val fit = (x: DenseVector[Double]) => x(0) * x(0) + x(1) * x(1) + 1.0
   val da = new DA(fit, 100, lb, ub, VariableParam)
-  val result = da.iterator(1000).take(1000).toList.reverse
+  val result = da.iterator(1000).take(1000).toList
   println(result.last.global)
 
   def v2xy(x: DenseVector[Double]): XY = XY(x(0), x(1))
-  val history = result.map(_.agents.map(_.x).map(v2xy)).transpose
-  //history.foreach(println)
+  val history = result.map(_.agents.map(_.x).map(v2xy)).transpose.map(_.reverse)
+
 
   stage = new PrimaryStage {
 
@@ -37,10 +36,10 @@ object Main extends JFXApp {
         style = "-fx-background-color: white;"
         val scale: (XY) => XY = (v: XY) => (v * 2) + XY(500, 350)
         val interval = 0.5
-        val food = Particle(result.map(_.food).map(v2xy), scale, interval)
+        val food = Particle(result.map(_.food).map(v2xy).reverse, scale, interval)
         food.fill = Color.Green
         food.radius = 1.5
-        val enemy = Particle(result.map(_.enemy).map(v2xy), scale, interval)
+        val enemy = Particle(result.map(_.enemy).map(v2xy).reverse, scale, interval)
         enemy.fill = Color.Red
         enemy.radius = 1.5
         val particles: List[Particle] = history.map{ l => Particle(l, scale, interval)}
