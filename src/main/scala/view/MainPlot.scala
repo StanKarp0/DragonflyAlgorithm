@@ -1,20 +1,25 @@
 package view
 
 import breeze.linalg.DenseVector
-import model.{ConstParam, DA, VariableParam}
+import model.{ConstParam, DA, Func, VariableParam}
 
 /**
   * Created by wojciech on 23.04.17. 
   */
 object MainPlot extends App {
 
-  val lb = DenseVector[Double](-100, -100)
-  val ub = DenseVector[Double](100, 100)
+  val D = 10 // dimensions, nx
+
+  val lb = DenseVector.fill[Double](D, -100)
+  val ub = DenseVector.fill[Double](D, 100)
   def parameters(iteration: Int, maxIteration: Int) =
 //    ConstParam(a = 2.0, c = 1.0, e = 1.0, f = 1.0, s = 0.0, w = 0.0)
     VariableParam(iteration, maxIteration)
 
-  val fit = (x: DenseVector[Double]) => x(0) * x(0) + x(1) * x(1) + 1.0
+  val func = new Func();
+
+  //val fit = (x: DenseVector[Double]) => x(0) * x(0) + x(1) * x(1) + 1.0
+  val fit = (x: DenseVector[Double]) => func.bentCigarFunc(x, sFlag = true, rFlag = true)
   val da = new DA(fit, 100, lb, ub, parameters)
   val result = da.iterator(1000).take(1000).toList
 

@@ -1,7 +1,7 @@
 package view
 
 import breeze.linalg._
-import model.{ConstParam, DA, VariableParam}
+import model.{ConstParam, DA, Func, VariableParam}
 
 import scalafx.Includes._
 import scalafx.application.JFXApp
@@ -16,10 +16,15 @@ import scalafx.scene.paint.Color
   */
 object Main extends JFXApp {
 
-  val lb = DenseVector[Double](-100, -100)
-  val ub = DenseVector[Double](100, 100)
+  val D = 10 // dimensions, nx
 
-  val fit = (x: DenseVector[Double]) => x(0) * x(0) + x(1) * x(1) + 1.0
+  val lb = DenseVector.fill[Double](D, -100)
+  val ub = DenseVector.fill[Double](D, 100)
+
+  val func = new Func();
+
+  //val fit = (x: DenseVector[Double]) => x(0) * x(0) + x(1) * x(1) + 1.0
+  val fit = (x: DenseVector[Double]) => func.bentCigarFunc(x, sFlag = true, rFlag = true)
   val da = new DA(fit, 100, lb, ub, VariableParam)
   val result = da.iterator(1000).take(1000).toList
   println(result.last.global)
