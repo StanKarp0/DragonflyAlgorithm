@@ -18,7 +18,7 @@ object MainPlot extends App {
 
   val func = new Func();
 
-  //val fit = (x: DenseVector[Double]) => x(0) * x(0) + x(1) * x(1) + 1.0
+  //val fit = (x: DenseVector[Double]) => x(0) * x(0) + x(1) * x(1) + x(2) * x(2)+ x(3) * x(3)+ x(4) * x(4)+ x(5) * x(5)+ x(6) * x(6)+ x(7) * x(7)+ x(8) * x(8)+ x(9) * x(9)
   val fit = (x: DenseVector[Double]) => func.bentCigarFunc(x, sFlag = true, rFlag = true)
   val da = new DA(fit, 100, lb, ub, parameters)
   val result = da.iterator(1000).take(1000).toList
@@ -35,7 +35,7 @@ object MainPlot extends App {
     result.map(_.std),
     "std_dev_1.png"
   )
-  DAPlot.parameters(parameters, 1000/*Liczba testow dla jednej iteracji; przy prawdopdb*/, 1000)
+  DAPlot.parameters(parameters, 500/*Liczba testow dla jednej iteracji; przy prawdopdb*/, 1000)
 //  result.map(r => s"${r.i} ${r.global.value}").foreach(println) // evolution global result
 //  result.map(r => s"${r.i} ${r.actual}").foreach(println) // evolution actual result
 //  result.map(r => s"${r.i} ${r.mean}").foreach(println) // evolution mean

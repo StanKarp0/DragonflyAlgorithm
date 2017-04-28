@@ -31,12 +31,15 @@ abstract class DragonflyAlgorithm(nAgents: Int) {
     val start = Result(1, minimum, minimum.value, minimum.x, maximum, radius(0, max), init)
 
     Iterator.iterate(start){
-      case result@ Result(i, global, _, _, _, _, agents, _, _) =>
+      case result@ Result(i, global, _, food, enemy, _, agents, _, _) =>
 
         // Update the food source and enemy
-        val newFood = agents.minBy(_.value).x
-        val newEnemy = agents.maxBy(_.value).x
-
+        var newFood = agents.minBy(_.value).x
+        var newEnemy = agents.maxBy(_.value).x
+        if(func(newFood) > func(food)  )
+          newFood = food
+        if(func(newEnemy) < func(enemy))
+          newEnemy = enemy
         // Update w, s, a, c, f, and e
         val p = params(i, max)
 

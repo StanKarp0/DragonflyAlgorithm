@@ -23,7 +23,7 @@ class DA(f: DenseVector[Double] => Double, val nAgents: Int, lb: DenseVector[Dou
     val (newP, newD) = pos.data.zip(delta.data).zip(borders).map{
       case ((v, d), b) =>
         val nv = b(v)
-        ( nv, if(nv == v) d else 0.0)
+        ( nv, if(nv == v) d else v)
     }.unzip
 
 //    val (newP, newD) = pos.data.zip(delta.data).zip(lb.data.zip(ub.data)).map{

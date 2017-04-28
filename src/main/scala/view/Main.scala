@@ -16,7 +16,7 @@ import scalafx.scene.paint.Color
   */
 object Main extends JFXApp {
 
-  val D = 10 // dimensions, nx
+  val D = 2 // dimensions, nx
 
   val lb = DenseVector.fill[Double](D, -100)
   val ub = DenseVector.fill[Double](D, 100)
@@ -24,7 +24,9 @@ object Main extends JFXApp {
   val func = new Func();
 
   //val fit = (x: DenseVector[Double]) => x(0) * x(0) + x(1) * x(1) + 1.0
-  val fit = (x: DenseVector[Double]) => func.bentCigarFunc(x, sFlag = true, rFlag = true)
+  //val fit = (x: DenseVector[Double]) => func.bentCigarFunc(x, sFlag = true, rFlag = true)
+  val fit = (x: DenseVector[Double]) => x(0) * x(0) + x(1) * x(1)// + x(2) * x(2)+ x(3) * x(3)+ x(4) * x(4)+ x(5) * x(5)+ x(6) * x(6)+ x(7) * x(7)+ x(8) * x(8)+ x(9) * x(9)
+
   val da = new DA(fit, 100, lb, ub, VariableParam)
   val result = da.iterator(1000).take(1000).toList
   println(result.last.global)
