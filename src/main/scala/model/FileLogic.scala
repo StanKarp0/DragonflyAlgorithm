@@ -9,7 +9,9 @@ import breeze.linalg.{DenseMatrix, DenseVector}
   */
 class FileLogic {
 
-  private val FILE_PREFIX = System.getProperty("user.dir")+"\\src\\main\\assets\\"
+  private val sep = File.separator
+  private val FILE_PREFIX =
+    System.getProperty("user.dir")+s"${sep}src${sep}main${sep}assets$sep"
 
 
   /**get rotation matrix

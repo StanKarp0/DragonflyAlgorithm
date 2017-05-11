@@ -1,6 +1,7 @@
 package model
 
-import breeze.linalg.DenseVector
+import breeze.linalg.{DenseVector, where}
+import breeze.numerics.{floor, pow}
 import breeze.stats.distributions.Uniform
 import da.{DragonflyAlgorithm, Parameters}
 import da.Tools.V
@@ -17,21 +18,13 @@ class DA(f: DenseVector[Double] => Double, val nAgents: Int, lb: DenseVector[Dou
     val bounds = ub - lb
     (bounds *:* 0.25) + (bounds *:* ((i.toDouble / max.toDouble) * 2.0))
   }
-  private val borders = lb.data.zip(ub.data).map(t => Border.square(t._1, t._2))
-
-  def border(pos: V, delta: V): (V, V) = {
-    val (newP, newD) = pos.data.zip(delta.data).zip(borders).map{
-      case ((v, d), b) =>
-        val nv = b(v)
-        ( nv, if(nv == v) d else v)
-    }.unzip
-
-//    val (newP, newD) = pos.data.zip(delta.data).zip(lb.data.zip(ub.data)).map{
-//      case ((v, _), (l, u)) if v < l => (u, 0.0)
-//      case ((v, _), (l, u)) if v > u => (l, 0.0)
-//      case ((v, d), _) => (v, d)
-//    }.unzip
-    (DenseVector(newP), DenseVector(newD))
+  private val diff = ub - lb
+  def border(pos: V, velocity: V): (V, V) = {
+    val f = floor(pos / diff +:+ 0.5)
+    velocity(where(pos <:< lb)) :*= -1.0
+    velocity(where(pos >:> ub)) :*= -1.0
+    val newPos = (pos - diff *:* f) *:* pow(-1.0, f)
+    (newPos, velocity)
   }
 
   override def params(i: Int, max: Int): Parameters = parameters(i, max)
@@ -42,15 +35,4 @@ class DA(f: DenseVector[Double] => Double, val nAgents: Int, lb: DenseVector[Dou
     Iterator.continually(Point(vector(), vector()))
   }
 
-}
-object Border {
-  def square(lower: Double, upper: Double): Double => Double = {
-    val diff = upper - lower
-    (x: Double) =>
-      (if (math.floor((math.abs(x) + upper) / diff) % 2 == 1) {
-        upper - math.abs(x + upper) % diff
-      } else {
-        math.abs(x + upper) % diff - upper
-      }) * (if (x < lower) -1 else 1)
-  }
 }
